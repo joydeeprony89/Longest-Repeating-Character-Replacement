@@ -13,6 +13,8 @@ namespace Longest_Repeating_Character_Replacement
       Console.WriteLine(result);
     }
 
+    // Run time  - O(26*n)
+    // space - O(n)
     public int CharacterReplacement(string s, int k)
     {
       int maxLength = 0;
@@ -50,6 +52,41 @@ namespace Longest_Repeating_Character_Replacement
         }
       }
       return maxLength;
+    }
+
+    // Time - O(n)
+    // Space - O(n)
+    public int CharacterReplacement_Improved(string s, int k)
+    {
+      int res = 0;
+      int l = 0; int r = 0;
+      int maxFrequency = 0;
+      int length = s.Length;
+      int[] freq = new int[26];
+      // r < length for the array out of bound
+      // length - l > res, length - l if it is greater than current max res then only there is a chance to have a new updated res
+      while (r < length && length - l > res)
+      {
+        int maxSubstringLength = r - l + 1;
+        char c = s[r];
+        // update the frequency
+        freq[c - 'A']++;
+        // we are maintaining global max freqency
+        maxFrequency = Math.Max(maxFrequency, freq[c - 'A']);
+        // (r - l + 1) is the current max length of the substring
+        while (maxSubstringLength - maxFrequency > k)
+        {
+          char prevCharAtLeft = s[l];
+          freq[prevCharAtLeft - 'A']--;
+          l++;
+          // udpate the maxSubstringLength because we have moved left position 
+          maxSubstringLength = r - l + 1;
+        }
+        res = Math.Max(res, maxSubstringLength);
+        r++;
+      }
+
+      return res;
     }
   }
 }
